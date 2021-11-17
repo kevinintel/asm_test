@@ -21,7 +21,7 @@ int main(){
     }
 
     void (*mm)(long,long,long*);
-    mm =(void (*)(long,long,long*)) dlsym(handle, "_Z8sumstorellPl");
+    mm =(void (*)(long,long,long*)) dlsym(handle, "add_sum");
     if ((error_str = dlerror()) != NULL)  {
         fputs(error_str, stderr);
         exit(1);

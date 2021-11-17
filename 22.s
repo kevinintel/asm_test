@@ -1,48 +1,74 @@
-	.file	"22.cpp"
 	.text
-	.globl	_Z8sumstorellPl
-	.type	_Z8sumstorellPl, @function
-_Z8sumstorellPl:
+	.globl	add_sum
+	.type	add_sum, @function
+add_sum:
 .LFB0:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
+	.cfi_startproc #program start
+	#endbr64 #TERMINATE BRANCH 64bit
+	pushq	%rbp #stack pointer
+
+
+#+----------------+
+#|stack pointer rbp|
+#+----------------+
+
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movq	%rdi, -24(%rbp)
-	movq	%rsi, -32(%rbp)
-	movq	%rdx, -40(%rbp)
-	movq	-24(%rbp), %rdx
-	movq	-32(%rbp), %rax
-	addq	%rdx, %rax
-	movq	%rax, -8(%rbp)
-	movq	-40(%rbp), %rax
-	movq	-8(%rbp), %rdx
-	movq	%rdx, (%rax)
+
+
+#8:64bits
+#:                :
+#|    whatever    | <--- CFA
+#+----------------+
+#| return address | <--- %rsp == CFA - 8
+#+----------------+
+
+
+#:                :
+#|    whatever    | <--- CFA
+#+----------------+
+#| return address |<- when c call asm, push address
+#+----------------+
+#| reserved space | <--- %rsp == CFA - 16 ,call site
+#+----------------+
+
+
+	movq	%rsp, %rbp 
+#rbp is the base pointer, which points to the base of the current stack frame, and rsp is the stack pointer, which points to the top of the current stack frame.
+	.cfi_def_cfa_register 6 #cfa register is rbp
+	movq	%rdi, -24(%rbp) #arg0 *(rbp-24) = rdi;
+	movq	%rsi, -32(%rbp) #arg1 *(rbp-32) = rsi;
+	movq	%rdx, -40(%rbp) #arg2
+	movq	-24(%rbp), %rdx #rdx =arg0
+	movq	-32(%rbp), %rax #rax = arg1
+	addq	%rdx, %rax #add arg0,arg1 to rax
+	movq	%rax, -8(%rbp) #*(rbp-8) = rax
+	movq	-40(%rbp), %rax #rax = arg2
+	movq	-8(%rbp), %rdx  #rdx = *(rbp-8)
+	movq	%rdx, (%rax) #*rax=rdx
 	nop
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
-	.cfi_endproc
-.LFE0:
-	.size	_Z8sumstorellPl, .-_Z8sumstorellPl
-	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
-	.section	.note.GNU-stack,"",@progbits
-	.section	.note.gnu.property,"a"
-	.align 8
-	.long	 1f - 0f
-	.long	 4f - 1f
-	.long	 5
-0:
-	.string	 "GNU"
-1:
-	.align 8
-	.long	 0xc0000002
-	.long	 3f - 2f
-2:
-	.long	 0x3
-3:
-	.align 8
-4:
+	.cfi_endproc # program end
+#.LFE0:
+#.data_tag:
+#	.size	add_sum, .-add_sum
+#	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
+#	.section	.note.GNU-stack,"",@progbits
+#	.section	.note.gnu.property,"a"
+#	.align 8
+#	.long	 1f - 0f
+#	.long	 4f - 1f
+#	.long	 5
+#0:
+#	.string	 "GNU"
+#1:
+#	.align 8
+#	.long	 0xc0000002
+#	.long	 3f - 2f
+#2:
+#	.long	 0x3
+#3:
+#	.align 8
+#4:
