@@ -42,10 +42,14 @@ add_sum:
 	movq	-24(%rbp), %rdx #rdx =arg0
 	movq	-32(%rbp), %rax #rax = arg1
 	addq	%rdx, %rax #add arg0,arg1 to rax
-	movq	%rax, -8(%rbp) #*(rbp-8) = rax
+
+        movq    %rax,%rcx
+
+	#movq	%rax, -8(%rbp) #*(rbp-8) = rax
 	movq	-40(%rbp), %rax #rax = arg2
-	movq	-8(%rbp), %rdx  #rdx = *(rbp-8)
-	movq	%rdx, (%rax) #*rax=rdx
+	#movq	-8(%rbp), %rdx  #rdx = *(rbp-8)
+	movq	%rcx, (%rax) #*rax=rdx
+##        movq  %rax, -40(%rbp)
 	nop
 	popq	%rbp
 	.cfi_def_cfa 7, 8
