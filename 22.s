@@ -1,12 +1,12 @@
-	.text
 	.globl	add_sum
 	.type	add_sum, @function
+        .text
+
 add_sum:
 .LFB0:
 	.cfi_startproc #program start
 	#endbr64 #TERMINATE BRANCH 64bit
 	pushq	%rbp #stack pointer
-
 
 #+----------------+
 #|stack pointer rbp|
@@ -32,7 +32,6 @@ add_sum:
 #| reserved space | <--- %rsp == CFA - 16 ,call site
 #+----------------+
 
-
 	movq	%rsp, %rbp 
 #rbp is the base pointer, which points to the base of the current stack frame, and rsp is the stack pointer, which points to the top of the current stack frame.
 	.cfi_def_cfa_register 6 #cfa register is rbp
@@ -45,10 +44,25 @@ add_sum:
 
         movq    %rax,%rcx
 
+
+
+
+
+
+movq    %rdx,%xmm0
+vpbroadcastd %xmm0, %zmm0
+#vcvtps2dq %ymm1, %ymm6
+#movq    %rax,%zmm0
+vpmovdb    %zmm0,%xmm0#xmm0:128bits,lower 64 bits
+#movhlps %xmm0,%xmm0 #move hight to lower
+
+#vpmovdb %zmm0,%xmm0
+
+
 	#movq	%rax, -8(%rbp) #*(rbp-8) = rax
 	movq	-40(%rbp), %rax #rax = arg2
 	#movq	-8(%rbp), %rdx  #rdx = *(rbp-8)
-	movq	%rcx, (%rax) #*rax=rdx
+	movq	%xmm0, (%rax) #*rax=rdx
 ##        movq  %rax, -40(%rbp)
 	nop
 	popq	%rbp
@@ -76,3 +90,7 @@ add_sum:
 #3:
 #	.align 8
 #4:
+
+
+
+

@@ -30,7 +30,7 @@ int main(){
     long*a;
     a=(long *)malloc(1*sizeof(long));
     printf("===========asm==========\n");
-    mm(3,5,a);
+    mm(257,5,a);
     printf("===========result %ld==========\n",*a);
 
     return 0;
